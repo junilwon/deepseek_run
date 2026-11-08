@@ -17,7 +17,8 @@ python judge_deepseek.py            # key is read from deepseek_api_key.txt (or 
 ```
 Cheap trial first: `python judge_deepseek.py --limit 5` (5 new rows per model), then run without `--limit`.
 Interruption-safe: every finished call is appended and flushed to `results/<model>.jsonl` at once; Ctrl-C cancels the calls not yet
-sent, so at most `--workers` (default 8) in-flight calls are lost. Re-running skips everything already saved and retries API errors.
+sent, so at most `--workers` (default 8) in-flight calls are lost. Re-running skips everything already saved and retries API errors. When `data/` gains questions or models, a re-run judges only the new
+rows; a row whose question/answer/prediction changed is judged again (content fingerprint `row_hash`); unchanged saved judgments are reused, no API call.
 Token counts are printed every 25 calls and at the end.
 Results go to `results/<model>.jsonl` (raw judge text + parsed dict) and `results/summary.json` / `results/summary.md`
 (overall accuracy and per-category counts). Commit and push `results/` back when done.

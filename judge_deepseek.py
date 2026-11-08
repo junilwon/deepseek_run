@@ -12,7 +12,7 @@ usage:
   python judge_deepseek.py --dry_run       # print the first prompt, no API call
 outputs: results/<model>.jsonl (raw judge text + parsed dict), results/summary.json, results/summary.md
 """
-import argparse, ast, collections, glob, json, os, re, sys, time, urllib.request, urllib.error
+import argparse, ast, collections, glob, hashlib, json, os, re, sys, time, urllib.request, urllib.error
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 ap = argparse.ArgumentParser()
@@ -65,6 +65,10 @@ def read_jsonl(path):
     return out
 
 
+def row_hash(r):   # identifies the judged content; a changed prediction / answer gets judged again
+    return hashlib.sha1(json.dumps([r["question"], r["answer"], r["prediction"]], ensure_ascii=False).encode()).hexdigest()[:16]
+
+
 def call(prompt, key):
     body = json.dumps({"model": args.judge_model, "temperature": 0, "max_tokens": args.max_tokens, "stream": False,
                        "messages": [{"role": "user", "content": prompt}]}).encode()
@@ -82,7 +86,7 @@ def judge_row(r, key):
             raw, used, usage = call(create_prompt(r["question"], r["answer"], r["prediction"]), key); err = None; break
         except Exception as e:   # rate limit / network: back off and retry
             err = f"{type(e).__name__}: {str(e)[:200]}"; time.sleep(5 * (attempt + 1))
-    return {"question_id": r["question_id"], "question_type": r["question_type"], "judge_model": used or args.judge_model,
+    return {"question_id": r["question_id"], "question_type": r["question_type"], "row_hash": row_hash(r), "judge_model": used or args.judge_model,
             "judge_raw": raw, "parsed": parse(raw) if raw else None, "judge_error": err,
             "usage": {k: usage.get(k) for k in ("prompt_tokens", "completion_tokens") if k in usage}}
 
@@ -98,8 +102,14 @@ summary = {}; tok_in = tok_out = 0
 for m in models:
     rows = {r["question_id"]: r for r in read_jsonl(os.path.join(HERE, "data", m + ".jsonl"))}
     rf = os.path.join(HERE, "results", m + ".jsonl")
-    done = {r["question_id"]: r for r in read_jsonl(rf) if r.get("judge_error") is None}
+    # reuse saved judgments: same question_id and same content (rows judged before row_hash existed are taken as unchanged)
+    saved = {}
+    for r in read_jsonl(rf):
+        if r.get("judge_error") is None: saved[r["question_id"]] = r   # the latest saved judgment of a question wins
+    done = {q: r for q, r in saved.items() if q in rows and r.get("row_hash", row_hash(rows[q])) == row_hash(rows[q])}
+    changed = sum(1 for q in saved if q in rows and q not in done)
     todo = [r for q, r in rows.items() if q not in done]
+    print(f"[{m}] reuse {len(done)} saved judgments, {changed} changed rows re-judged, {len(todo) - changed} new", flush=True)
     if args.limit: todo = todo[:args.limit]
     print(f"[{m}] {len(rows)} predictions, {len(done)} judged, {len(todo)} to do", flush=True)
     # every finished call is appended and flushed to results/<model>.jsonl immediately; on Ctrl-C the not-yet-sent calls are
@@ -119,7 +129,7 @@ for m in models:
     ex.shutdown(wait=True)
     by = collections.defaultdict(lambda: [0, 0]); unparsable = 0
     for q, rec in done.items():
-        if q not in rows: continue
+        if q not in rows: continue   # judged rows no longer in data/ are ignored (kept in the file)
         ok = bool(rec["parsed"]) and rec["parsed"]["pred"] == "correct"; unparsable += rec["parsed"] is None
         by[rec["question_type"]][0] += ok; by[rec["question_type"]][1] += 1
     n = sum(v[1] for v in by.values())
