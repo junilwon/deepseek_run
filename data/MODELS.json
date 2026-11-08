@@ -1,50 +1,30 @@
 {
   "qwen3vl8b_base": {
-    "n": 130,
-    "source_tag": "qwen3_base_et",
-    "frames": {
-      "nframes": 32
-    },
-    "started": "2026-11-08T17:45:11"
+    "n": 212,
+    "source_tag": "qwen3_base_et"
   },
   "qwen3vl8b_base_mixv3sft_ck2099": {
-    "n": 130,
-    "source_tag": "qwen3base_mixv3_qkv17_75_ck2099_et",
-    "frames": {
-      "nframes": 32
-    },
-    "started": "2026-11-08T17:52:52"
+    "n": 212,
+    "source_tag": "qwen3base_mixv3_qkv17_75_ck2099_et"
   },
   "lf_c0attn_mixv3sft_ck1500": {
-    "n": 130,
-    "source_tag": "c0attn_mixv3_qkv17_37_ck1500_et",
-    "frames": {
-      "nframes": 32
-    },
-    "started": "2026-11-08T17:51:47"
+    "n": 212,
+    "source_tag": "c0attn_mixv3_qkv17_37_ck1500_et"
   },
   "lf_c0attn_stage1_only": {
-    "n": 130,
-    "source_tag": "lf_c0attn_v5_assembled_et",
-    "frames": {
-      "nframes": 32
-    },
-    "started": "2026-11-08T17:44:45"
+    "n": 212,
+    "source_tag": "lf_c0attn_v5_assembled_et"
   },
   "internvl35_8b_base": {
-    "n": 130,
-    "source_tag": "ivl35base_et",
-    "frames": {
-      "nframes": 32
-    },
-    "started": "2026-11-08T20:39:28"
+    "n": 212,
+    "source_tag": "ivl35base_et"
   },
   "qwen3vl8b_base_egoplanit_sft": {
-    "n": 130,
+    "n": 212,
     "source_tag": "qwen3base_egoplanit_37_final_et"
   },
   "lf_c0attn_mixv3sft_ck2099": {
-    "n": 130,
+    "n": 212,
     "source_tag": "c0attn_mixv3_qkv17_37_ck2099_et"
   }
 }

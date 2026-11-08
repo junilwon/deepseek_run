@@ -1,6 +1,6 @@
 # EgoTempo answers + DeepSeek-V3 judge
 
-Model answers on the EgoTempo OpenQA benchmark (130 of the 500 questions: the ones whose Ego4D clips we have), packaged so the
+Model answers on the EgoTempo OpenQA benchmark (212 of the 500 questions: the ones whose Ego4D clips we have; 130 until 11-09), packaged so the
 LLM-judge step can run on any machine that can reach `api.deepseek.com`.
 
 ## Contents
