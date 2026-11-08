@@ -6,7 +6,7 @@ Unparsable judge output counts as incorrect and is reported. Resumable: finished
 rows with API errors are retried on the next run.
 
 usage:
-  export DEEPSEEK_API_KEY=sk-...           # never commit the key
+  (key: DEEPSEEK_API_KEY env var, else deepseek_api_key.txt next to this script)
   python judge_deepseek.py                 # all models in data/
   python judge_deepseek.py --models qwen3vl8b_base --workers 8
   python judge_deepseek.py --dry_run       # print the first prompt, no API call
@@ -89,7 +89,8 @@ models = args.models or sorted(os.path.basename(f)[:-6] for f in glob.glob(os.pa
 if args.dry_run:
     r = read_jsonl(os.path.join(HERE, "data", models[0] + ".jsonl"))[0]
     print(create_prompt(r["question"], r["answer"], r["prediction"])); sys.exit(0)
-key = os.environ.get("DEEPSEEK_API_KEY") or sys.exit("set DEEPSEEK_API_KEY")
+kf = os.path.join(HERE, "deepseek_api_key.txt")   # private repo: key file kept here at the user's request
+key = os.environ.get("DEEPSEEK_API_KEY") or (open(kf).read().strip() if os.path.exists(kf) else None) or sys.exit("set DEEPSEEK_API_KEY or add deepseek_api_key.txt")
 os.makedirs(os.path.join(HERE, "results"), exist_ok=True)
 summary = {}
 for m in models:

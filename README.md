@@ -13,8 +13,7 @@ LLM-judge step can run on any machine that can reach `api.deepseek.com`.
 
 ## Run
 ```bash
-export DEEPSEEK_API_KEY=sk-...      # do not commit the key
-python judge_deepseek.py            # all models; resumable (re-run to retry errors)
+python judge_deepseek.py            # key is read from deepseek_api_key.txt (or DEEPSEEK_API_KEY)            # all models; resumable (re-run to retry errors)
 ```
 Results go to `results/<model>.jsonl` (raw judge text + parsed dict) and `results/summary.json` / `results/summary.md`
 (overall accuracy and per-category counts). Commit and push `results/` back when done.
