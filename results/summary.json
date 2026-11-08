@@ -1,0 +1,112 @@
+{
+  "internvl35_8b_base": {
+    "n_judged": 130,
+    "n_predictions": 130,
+    "errors_pending": 0,
+    "unparsable": 0,
+    "overall": 27.7,
+    "per_category": {
+      "action sequence": "4/27 (14.8)",
+      "action-specific object": "6/10 (60.0)",
+      "counting actions": "2/6 (33.3)",
+      "counting objects": "7/14 (50.0)",
+      "future action prediction": "0/11 (0.0)",
+      "locating object": "8/15 (53.3)",
+      "object sequence": "0/8 (0.0)",
+      "object-specific action": "4/12 (33.3)",
+      "spatial relationship": "3/14 (21.4)",
+      "temporal event ordering": "2/13 (15.4)"
+    },
+    "judge_model": [
+      "deepseek-flash"
+    ]
+  },
+  "lf_c0attn_mixv3sft_ck1500": {
+    "n_judged": 130,
+    "n_predictions": 130,
+    "errors_pending": 0,
+    "unparsable": 0,
+    "overall": 24.6,
+    "per_category": {
+      "action sequence": "4/27 (14.8)",
+      "action-specific object": "6/10 (60.0)",
+      "counting actions": "2/6 (33.3)",
+      "counting objects": "4/14 (28.6)",
+      "future action prediction": "3/11 (27.3)",
+      "locating object": "6/15 (40.0)",
+      "object sequence": "0/8 (0.0)",
+      "object-specific action": "4/12 (33.3)",
+      "spatial relationship": "1/14 (7.1)",
+      "temporal event ordering": "2/13 (15.4)"
+    },
+    "judge_model": [
+      "deepseek-flash"
+    ]
+  },
+  "lf_c0attn_stage1_only": {
+    "n_judged": 130,
+    "n_predictions": 130,
+    "errors_pending": 0,
+    "unparsable": 0,
+    "overall": 36.2,
+    "per_category": {
+      "action sequence": "6/27 (22.2)",
+      "action-specific object": "6/10 (60.0)",
+      "counting actions": "2/6 (33.3)",
+      "counting objects": "6/14 (42.9)",
+      "future action prediction": "5/11 (45.5)",
+      "locating object": "8/15 (53.3)",
+      "object sequence": "0/8 (0.0)",
+      "object-specific action": "6/12 (50.0)",
+      "spatial relationship": "5/14 (35.7)",
+      "temporal event ordering": "3/13 (23.1)"
+    },
+    "judge_model": [
+      "deepseek-flash"
+    ]
+  },
+  "qwen3vl8b_base": {
+    "n_judged": 130,
+    "n_predictions": 130,
+    "errors_pending": 0,
+    "unparsable": 0,
+    "overall": 34.6,
+    "per_category": {
+      "action sequence": "5/27 (18.5)",
+      "action-specific object": "5/10 (50.0)",
+      "counting actions": "3/6 (50.0)",
+      "counting objects": "6/14 (42.9)",
+      "future action prediction": "4/11 (36.4)",
+      "locating object": "8/15 (53.3)",
+      "object sequence": "1/8 (12.5)",
+      "object-specific action": "6/12 (50.0)",
+      "spatial relationship": "4/14 (28.6)",
+      "temporal event ordering": "3/13 (23.1)"
+    },
+    "judge_model": [
+      "deepseek-flash"
+    ]
+  },
+  "qwen3vl8b_base_mixv3sft_ck2099": {
+    "n_judged": 130,
+    "n_predictions": 130,
+    "errors_pending": 0,
+    "unparsable": 0,
+    "overall": 28.5,
+    "per_category": {
+      "action sequence": "4/27 (14.8)",
+      "action-specific object": "6/10 (60.0)",
+      "counting actions": "2/6 (33.3)",
+      "counting objects": "5/14 (35.7)",
+      "future action prediction": "2/11 (18.2)",
+      "locating object": "8/15 (53.3)",
+      "object sequence": "1/8 (12.5)",
+      "object-specific action": "3/12 (25.0)",
+      "spatial relationship": "2/14 (14.3)",
+      "temporal event ordering": "4/13 (30.8)"
+    },
+    "judge_model": [
+      "deepseek-flash"
+    ]
+  }
+}
