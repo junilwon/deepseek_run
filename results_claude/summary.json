@@ -1,0 +1,138 @@
+{
+  "lf_c0attn_mixv3sft_ck1500": {
+    "overall": 26.4,
+    "n": 212,
+    "mean_score": 1.51,
+    "per_category": {
+      "action sequence": "7/32",
+      "action-specific object": "7/16",
+      "counting actions": "2/13",
+      "counting objects": "6/26",
+      "future action prediction": "5/18",
+      "locating object": "11/21",
+      "object sequence": "3/19",
+      "object-specific action": "4/21",
+      "spatial relationship": "6/21",
+      "temporal event ordering": "5/25"
+    }
+  },
+  "qwen3vl8b_base_egoplanit_sft": {
+    "overall": 28.3,
+    "n": 212,
+    "mean_score": 1.64,
+    "per_category": {
+      "action sequence": "7/32",
+      "action-specific object": "8/16",
+      "counting actions": "4/13",
+      "counting objects": "7/26",
+      "future action prediction": "4/18",
+      "locating object": "12/21",
+      "object sequence": "1/19",
+      "object-specific action": "5/21",
+      "spatial relationship": "7/21",
+      "temporal event ordering": "5/25"
+    }
+  },
+  "lf_c0attn_mixv3sft_ck2099": {
+    "overall": 24.5,
+    "n": 212,
+    "mean_score": 1.54,
+    "per_category": {
+      "action sequence": "5/32",
+      "action-specific object": "7/16",
+      "counting actions": "2/13",
+      "counting objects": "6/26",
+      "future action prediction": "6/18",
+      "locating object": "11/21",
+      "object sequence": "3/19",
+      "object-specific action": "4/21",
+      "spatial relationship": "4/21",
+      "temporal event ordering": "4/25"
+    }
+  },
+  "qwen3vl8b_base": {
+    "overall": 31.1,
+    "n": 212,
+    "mean_score": 1.82,
+    "per_category": {
+      "action sequence": "8/32",
+      "action-specific object": "6/16",
+      "counting actions": "3/13",
+      "counting objects": "9/26",
+      "future action prediction": "7/18",
+      "locating object": "12/21",
+      "object sequence": "3/19",
+      "object-specific action": "6/21",
+      "spatial relationship": "6/21",
+      "temporal event ordering": "6/25"
+    }
+  },
+  "qwen3vl8b_base_mixv3sft_ck2099": {
+    "overall": 28.8,
+    "n": 212,
+    "mean_score": 1.64,
+    "per_category": {
+      "action sequence": "8/32",
+      "action-specific object": "7/16",
+      "counting actions": "2/13",
+      "counting objects": "6/26",
+      "future action prediction": "5/18",
+      "locating object": "13/21",
+      "object sequence": "2/19",
+      "object-specific action": "5/21",
+      "spatial relationship": "6/21",
+      "temporal event ordering": "7/25"
+    }
+  },
+  "lf_c0attn_stage1_only": {
+    "overall": 33.0,
+    "n": 212,
+    "mean_score": 1.84,
+    "per_category": {
+      "action sequence": "8/32",
+      "action-specific object": "7/16",
+      "counting actions": "2/13",
+      "counting objects": "9/26",
+      "future action prediction": "8/18",
+      "locating object": "11/21",
+      "object sequence": "2/19",
+      "object-specific action": "5/21",
+      "spatial relationship": "10/21",
+      "temporal event ordering": "8/25"
+    }
+  },
+  "internvl35_8b_base": {
+    "overall": 26.4,
+    "n": 212,
+    "mean_score": 1.56,
+    "per_category": {
+      "action sequence": "3/32",
+      "action-specific object": "11/16",
+      "counting actions": "2/13",
+      "counting objects": "8/26",
+      "future action prediction": "1/18",
+      "locating object": "11/21",
+      "object sequence": "1/19",
+      "object-specific action": "5/21",
+      "spatial relationship": "8/21",
+      "temporal event ordering": "6/25"
+    }
+  },
+  "qwen3vl8b_base_ek100_llavavideo178k_ck1000": {
+    "overall": 25.9,
+    "n": 212,
+    "mean_score": 1.52,
+    "per_category": {
+      "action sequence": "6/32",
+      "action-specific object": "6/16",
+      "counting actions": "5/13",
+      "counting objects": "7/26",
+      "future action prediction": "4/18",
+      "locating object": "10/21",
+      "object sequence": "2/19",
+      "object-specific action": "4/21",
+      "spatial relationship": "6/21",
+      "temporal event ordering": "5/25"
+    }
+  }
+}
