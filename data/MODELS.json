@@ -26,5 +26,9 @@
   "lf_c0attn_mixv3sft_ck2099": {
     "n": 212,
     "source_tag": "c0attn_mixv3_qkv17_37_ck2099_et"
+  },
+  "qwen3vl8b_base_ek100_llavavideo178k_ck1000": {
+    "n": 212,
+    "source_tag": "baselora_v2_ck1000_et"
   }
 }
