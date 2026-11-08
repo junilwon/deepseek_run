@@ -13,7 +13,7 @@ usage:
 outputs: results/<model>.jsonl (raw judge text + parsed dict), results/summary.json, results/summary.md
 """
 import argparse, ast, collections, glob, json, os, re, sys, time, urllib.request, urllib.error
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--models", nargs="*", default=None, help="data/<name>.jsonl names (default: all)")
@@ -22,6 +22,7 @@ ap.add_argument("--base_url", default="https://api.deepseek.com")
 ap.add_argument("--workers", type=int, default=8)
 ap.add_argument("--max_tokens", type=int, default=256)
 ap.add_argument("--dry_run", action="store_true")
+ap.add_argument("--limit", type=int, default=0, help="judge at most this many new rows per model (0 = all); for a cheap trial")
 args = ap.parse_args()
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -71,18 +72,19 @@ def call(prompt, key):
                                  headers={"Content-Type": "application/json", "Authorization": f"Bearer {key}"})
     with urllib.request.urlopen(req, timeout=120) as r:
         d = json.loads(r.read().decode())
-    return d["choices"][0]["message"]["content"], d.get("model")
+    return d["choices"][0]["message"]["content"], d.get("model"), d.get("usage") or {}
 
 
 def judge_row(r, key):
-    raw, used, err = None, None, None
+    raw, used, usage, err = None, None, {}, None
     for attempt in range(4):
         try:
-            raw, used = call(create_prompt(r["question"], r["answer"], r["prediction"]), key); err = None; break
+            raw, used, usage = call(create_prompt(r["question"], r["answer"], r["prediction"]), key); err = None; break
         except Exception as e:   # rate limit / network: back off and retry
             err = f"{type(e).__name__}: {str(e)[:200]}"; time.sleep(5 * (attempt + 1))
     return {"question_id": r["question_id"], "question_type": r["question_type"], "judge_model": used or args.judge_model,
-            "judge_raw": raw, "parsed": parse(raw) if raw else None, "judge_error": err}
+            "judge_raw": raw, "parsed": parse(raw) if raw else None, "judge_error": err,
+            "usage": {k: usage.get(k) for k in ("prompt_tokens", "completion_tokens") if k in usage}}
 
 
 models = args.models or sorted(os.path.basename(f)[:-6] for f in glob.glob(os.path.join(HERE, "data", "*.jsonl")))
@@ -92,18 +94,29 @@ if args.dry_run:
 kf = os.path.join(HERE, "deepseek_api_key.txt")   # private repo: key file kept here at the user's request
 key = os.environ.get("DEEPSEEK_API_KEY") or (open(kf).read().strip() if os.path.exists(kf) else None) or sys.exit("set DEEPSEEK_API_KEY or add deepseek_api_key.txt")
 os.makedirs(os.path.join(HERE, "results"), exist_ok=True)
-summary = {}
+summary = {}; tok_in = tok_out = 0
 for m in models:
     rows = {r["question_id"]: r for r in read_jsonl(os.path.join(HERE, "data", m + ".jsonl"))}
     rf = os.path.join(HERE, "results", m + ".jsonl")
     done = {r["question_id"]: r for r in read_jsonl(rf) if r.get("judge_error") is None}
     todo = [r for q, r in rows.items() if q not in done]
+    if args.limit: todo = todo[:args.limit]
     print(f"[{m}] {len(rows)} predictions, {len(done)} judged, {len(todo)} to do", flush=True)
-    with open(rf, "a", encoding="utf-8") as fo, ThreadPoolExecutor(args.workers) as ex:
-        for k, rec in enumerate(ex.map(lambda r: judge_row(r, key), todo)):
-            fo.write(json.dumps(rec, ensure_ascii=False) + "\n"); fo.flush()
-            if rec["judge_error"] is None: done[rec["question_id"]] = rec
-            if (k + 1) % 50 == 0: print(f"  {k+1}/{len(todo)}", flush=True)
+    # every finished call is appended and flushed to results/<model>.jsonl immediately; on Ctrl-C the not-yet-sent calls are
+    # cancelled, so an interruption loses at most the calls in flight (<= --workers). Re-running skips what is already saved.
+    ex = ThreadPoolExecutor(args.workers)
+    try:
+        with open(rf, "a", encoding="utf-8") as fo:
+            futs = [ex.submit(judge_row, r, key) for r in todo]
+            for k, f in enumerate(as_completed(futs)):
+                rec = f.result()
+                fo.write(json.dumps(rec, ensure_ascii=False) + "\n"); fo.flush(); os.fsync(fo.fileno())
+                if rec["judge_error"] is None: done[rec["question_id"]] = rec
+                tok_in += rec["usage"].get("prompt_tokens") or 0; tok_out += rec["usage"].get("completion_tokens") or 0
+                if (k + 1) % 25 == 0: print(f"  {k+1}/{len(todo)}  tokens so far in {tok_in:,} / out {tok_out:,}", flush=True)
+    except KeyboardInterrupt:
+        ex.shutdown(wait=False, cancel_futures=True); print("interrupted: saved rows are kept, re-run to continue"); sys.exit(1)
+    ex.shutdown(wait=True)
     by = collections.defaultdict(lambda: [0, 0]); unparsable = 0
     for q, rec in done.items():
         if q not in rows: continue
@@ -122,3 +135,4 @@ with open(os.path.join(HERE, "results", "summary.md"), "w") as f:
     for m, s in summary.items():
         f.write(f"| {m} | {s['overall']} | {s['n_judged']} | " + " | ".join(s["per_category"].get(c, "-").split(" ")[0] for c in cats) + " |\n")
 print(open(os.path.join(HERE, "results", "summary.md")).read())
+print(f"tokens this run: in {tok_in:,} / out {tok_out:,}")

@@ -15,6 +15,10 @@ LLM-judge step can run on any machine that can reach `api.deepseek.com`.
 ```bash
 python judge_deepseek.py            # key is read from deepseek_api_key.txt (or DEEPSEEK_API_KEY)            # all models; resumable (re-run to retry errors)
 ```
+Cheap trial first: `python judge_deepseek.py --limit 5` (5 new rows per model), then run without `--limit`.
+Interruption-safe: every finished call is appended and flushed to `results/<model>.jsonl` at once; Ctrl-C cancels the calls not yet
+sent, so at most `--workers` (default 8) in-flight calls are lost. Re-running skips everything already saved and retries API errors.
+Token counts are printed every 25 calls and at the end.
 Results go to `results/<model>.jsonl` (raw judge text + parsed dict) and `results/summary.json` / `results/summary.md`
 (overall accuracy and per-category counts). Commit and push `results/` back when done.
 
