@@ -38,5 +38,13 @@
       "nframes": 32
     },
     "started": "2026-11-08T20:39:28"
+  },
+  "qwen3vl8b_base_egoplanit_sft": {
+    "n": 130,
+    "source_tag": "qwen3base_egoplanit_37_final_et"
+  },
+  "lf_c0attn_mixv3sft_ck2099": {
+    "n": 130,
+    "source_tag": "c0attn_mixv3_qkv17_37_ck2099_et"
   }
 }
